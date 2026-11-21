@@ -31,6 +31,10 @@
 | TRAP-11 | 混合偏移 | 落错版本 | UTC归整 | `app/values.py` | `tests/test_m3.py::test_timezone_equal` |
 | TRAP-23 | 换乘截止点 | 重复优惠 | 截止点排除 | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py::test_exact_window_excluded` |
 | TRAP-25 | 票价重叠 | 随意取版 | 冲突隔离 | `app/modules/m3_fares/rules.py` | `tests/test_m3.py::test_overlap_rejected` |
+| TRAP-30 | 票种低票价放大补贴 | 1元减免直接减在票种实付上产生负应收 | 权益按普通票价基数、减免按票种实付封顶 | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py::test_elderly_discount_never_exceeds_payable` |
+| TRAP-31 | 双基数混用 | 卡日应收随口径漂移 | 双口径并行登记、唯一应收+影子对照 | `app/modules/m5_discounts/rules.py` | `tests/test_m5.py::test_student_two_bases_diverge_and_unique_receivable` |
+| TRAP-32 | 未登记票种 | 当普通卡默认放过 | 票种空/未登记隔离，不占额度 | `app/modules/m3_fares/rules.py` | `tests/test_m3.py::test_unknown_ticket_quarantined` |
+| TRAP-33 | 补贴超额封存 | 对账不平也可归档 | 优惠补贴>票种实付即UNBALANCED，卡日重复即拒 | `app/modules/m7_settlement/rules.py` | `tests/test_m7.py::test_subsidy_overrun_blocks_seal` |
 
 ## 对账规则
 

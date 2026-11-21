@@ -16,3 +16,15 @@ def test_overlap_is_rejected():
     with pytest.raises(DomainError):evaluate([{"_line":1}],{"quarantine":[{"_line":1}]})
 def test_real_sample_rejected_have_reason(result):
     assert all(r["reason"] and r["detail"] for r in result["stages"][5]["cumulative_quarantine"])
+def test_real_sample_subsidy_split_balances(result):
+    m=result["stages"][5]["metrics"]
+    assert Decimal(m["subsidy_total"])==Decimal(m["fare_subsidy_total"])+Decimal(m["discount_subsidy_total"])
+def test_real_sample_discount_subsidy_within_payable(result):
+    rows=result["stages"][5]["rows"]
+    assert all(r["subsidy_within_payable"] is True for r in rows)
+    assert all(Decimal(r["discount_subsidy"])<=Decimal(r["payable_fare"]) for r in rows)
+def test_real_sample_double_identity(result):
+    for r in result["stages"][5]["rows"]:
+        e=Decimal(r["expected"]);b=Decimal(r["base_fare"]);p=Decimal(r["payable_fare"])
+        assert b==e+Decimal(r["fare_subsidy"])+Decimal(r["discount_subsidy"])
+        assert p==e+Decimal(r["transfer_discount"])+Decimal(r["cap_discount"])

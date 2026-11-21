@@ -23,7 +23,7 @@ docker compose exec -T app pytest -q
 
 ## 核心规则
 
-换乘按上次有效付费行程的时间窗计算，优惠与日封顶按确定顺序裁决并保留分币守恒。
+换乘按上次有效付费行程的时间窗计算，优惠与日封顶按确定顺序裁决并保留分币守恒。票种基数裁决见 `docs/RULING.md`：**换乘权益与日封顶按普通票价统一基数**（学生、老年权益不缩水），**应收与清分补贴按票种实付统一基数**（减免与优惠补贴不超过本程票种实付）。M5页面平行展示两种口径的应收、封顶余量与口径差异，并按卡×业务日登记唯一应收；清分对账不平或补贴超额时M7拒绝封存。
 
 ## 演示
 
@@ -34,7 +34,7 @@ docker compose exec -T app pytest -q
 
 ## 输入与输出
 
-输入列见 `docs/DATA-DICTIONARY.md`。项目包含dirty.csv、clean.csv、legacy.csv，统一走实际导入路径。上传限制4MB，拒绝不带时区的时间。业务键按字符串保留，Decimal参与计算，空值不会当零。
+输入列见 `docs/DATA-DICTIONARY.md`。项目包含dirty.csv、clean.csv、legacy.csv，统一走实际导入路径。上传限制4MB，拒绝不带时区的时间。业务键按字符串保留，Decimal参与计算，空值不会当零。票种列ticket_type仅接受普通/学生/老年，未登记或空票种隔离不占额度。
 
 `POST /api/runs` 接收sample或csv；`GET /api/runs`返回历史批次；`POST /api/runs/<id>/review`需要version与decision；`GET /api/runs/<id>/archive`返回唯一证据导出。
 
